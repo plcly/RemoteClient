@@ -64,8 +64,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition Height="40" />
-                <RowDefinition />
-                <RowDefinition Height="80" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="100" />
             </Grid.RowDefinitions>
             <StackPanel Margin="0,3" Orientation="Horizontal">
                 <Button
@@ -112,13 +112,24 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button
-                Grid.Row="3"
-                Margin="80,10"
-                Command="{Binding OpenServerCommand}">
-                确定
-            </Button>
+            <Grid Grid.Row="3" Margin="20,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*">
+                    </RowDefinition>
+                    <RowDefinition Height="2*">
+                    </RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Content="启动SFTP" IsChecked="{Binding StartSFTP}">
+                    </CheckBox>
+                </StackPanel>
+                <Button
+                    Grid.Row="1"
+                    Margin="60,5"
+                    Command="{Binding OpenServerCommand}">
+                    确定
+                </Button>
+            </Grid>
         </Grid>
-
     </Grid>
 </Window>

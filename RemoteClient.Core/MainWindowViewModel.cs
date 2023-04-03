@@ -42,6 +42,14 @@ namespace RemoteClient.Core
             FilterText = string.Empty;
         }
 
+        private bool _startSFTP = true;
+        public bool StartSFTP
+        {
+            get => _startSFTP;
+            set => SetProperty(ref _startSFTP, value);
+        }
+
+
         private string _filterText;
         public string FilterText
         {
@@ -145,7 +153,7 @@ namespace RemoteClient.Core
                     File.AppendAllText(fileName, privateKey);
 
                     argument = ReplaceArgument(_settings.SSHPrivateKeyArguments).Replace("{fileName}", fileName);
-                    if (!string.IsNullOrEmpty(_settings.SFTPPath))
+                    if (StartSFTP && !string.IsNullOrEmpty(_settings.SFTPPath))
                     {
                         sftpArgument = ReplaceArgument(_settings.SFTPPrivateKeyArguments).Replace("{fileName}", fileName);
                     }
@@ -153,7 +161,7 @@ namespace RemoteClient.Core
                 else
                 {
                     argument = ReplaceArgument(_settings.SSHArguments);
-                    if (!string.IsNullOrEmpty(_settings.SFTPPath))
+                    if (StartSFTP && !string.IsNullOrEmpty(_settings.SFTPPath))
                     {
                         sftpArgument = ReplaceArgument(_settings.SFTPArguments);
                     }
@@ -165,7 +173,7 @@ namespace RemoteClient.Core
                 pro.StartInfo = p1;
                 pro.Start();
                 pro.Close();
-                if (!string.IsNullOrEmpty(_settings.SFTPPath))
+                if (StartSFTP && !string.IsNullOrEmpty(_settings.SFTPPath))
                 {
                     ProcessStartInfo p2 = new ProcessStartInfo();
                     p2.FileName = _settings.SFTPPath;
