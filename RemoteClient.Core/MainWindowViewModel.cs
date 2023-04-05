@@ -42,13 +42,20 @@ namespace RemoteClient.Core
             FilterText = string.Empty;
         }
 
+
+        private bool _startSSH = true;
+        public bool StartSSH
+        {
+            get => _startSSH;
+            set => SetProperty(ref _startSSH, value);
+        }
+
         private bool _startSFTP = true;
         public bool StartSFTP
         {
             get => _startSFTP;
             set => SetProperty(ref _startSFTP, value);
         }
-
 
         private string _filterText;
         public string FilterText
@@ -138,55 +145,53 @@ namespace RemoteClient.Core
             {
                 return;
             }
+            if (!StartSSH && !StartSFTP)
+            {
+                return;
+            }
+
             using (Process pro = new Process())
             {
-                var argument = string.Empty;
-                var sftpArgument = string.Empty;
+                var fileName = string.Empty;
                 if (SelectedItem.UsePrivateKey)
                 {
-                    var fileName = Path.Combine(Environment.CurrentDirectory, "temp", SelectedItem.ServerName + "_" + SelectedItem.Id + _settings.PrivateKeyExtension);
+                    fileName = Path.Combine(Environment.CurrentDirectory, "temp", SelectedItem.ServerName + "_" + SelectedItem.Id + _settings.PrivateKeyExtension);
                     if (File.Exists(fileName))
                     {
                         File.Delete(fileName);
                     }
                     var privateKey = SelectedItem.UserPassword;
                     File.AppendAllText(fileName, privateKey);
-
-                    argument = ReplaceArgument(_settings.SSHPrivateKeyArguments).Replace("{fileName}", fileName);
-                    if (StartSFTP && !string.IsNullOrEmpty(_settings.SFTPPath))
-                    {
-                        sftpArgument = ReplaceArgument(_settings.SFTPPrivateKeyArguments).Replace("{fileName}", fileName);
-                    }
                 }
-                else
+                if (StartSSH)
                 {
-                    argument = ReplaceArgument(_settings.SSHArguments);
-                    if (StartSFTP && !string.IsNullOrEmpty(_settings.SFTPPath))
-                    {
-                        sftpArgument = ReplaceArgument(_settings.SFTPArguments);
-                    }
+                    StartLinuxClient(pro
+                        , _settings.SSHPath
+                        , SelectedItem.UsePrivateKey ? _settings.SSHPrivateKeyArguments : _settings.SSHArguments
+                        , fileName);
+                }
+                if (StartSFTP)
+                {
+                    StartLinuxClient(pro
+                        , _settings.SFTPPath
+                        , SelectedItem.UsePrivateKey ? _settings.SFTPPrivateKeyArguments : _settings.SFTPArguments
+                        , fileName);
                 }
 
-                ProcessStartInfo p1 = new ProcessStartInfo();
-                p1.FileName = _settings.SSHPath;
-                p1.Arguments = argument;
-                pro.StartInfo = p1;
-                pro.Start();
-                pro.Close();
-                if (StartSFTP && !string.IsNullOrEmpty(_settings.SFTPPath))
-                {
-                    ProcessStartInfo p2 = new ProcessStartInfo();
-                    p2.FileName = _settings.SFTPPath;
-                    p2.Arguments = sftpArgument;
-                    pro.StartInfo = p2;
-                    pro.Start();
-                    pro.Close();
-                }
             }
         }
 
+        private void StartLinuxClient(Process pro, string? fileName, string? argumentsSetting, string keyFileName)
+        {
+            var arguments = ReplaceArgument(argumentsSetting, keyFileName);
 
-        private string ReplaceArgument(string arguments)
+            pro.StartInfo.FileName = fileName;
+            pro.StartInfo.Arguments = arguments;
+            pro.Start();
+            pro.Close();
+        }
+
+        private string ReplaceArgument(string arguments, string keyFileName)
         {
             if (arguments == null)
             {
@@ -194,7 +199,8 @@ namespace RemoteClient.Core
             }
             return arguments.Replace("{Server.UserName}", SelectedItem.UserName)
                             .Replace("{Server.ServerAddress}", SelectedItem.ServerAddress)
-                            .Replace("{Server.UserPassword}", SelectedItem.UserPassword);
+                            .Replace("{Server.UserPassword}", SelectedItem.UserPassword)
+                            .Replace("{keyFileName}", keyFileName);
         }
     }
 }

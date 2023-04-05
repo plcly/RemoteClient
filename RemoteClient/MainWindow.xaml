@@ -120,6 +120,8 @@
                     </RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
+                    <CheckBox Content="启动SSH" IsChecked="{Binding StartSSH}">
+                    </CheckBox>
                     <CheckBox Content="启动SFTP" IsChecked="{Binding StartSFTP}">
                     </CheckBox>
                 </StackPanel>
