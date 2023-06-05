@@ -97,6 +97,7 @@
                 Grid.Row="2"
                 Margin="20,0"
                 ItemsSource="{Binding ServerList}"
+                MouseDoubleClick="lstBoxServerList_MouseDoubleClick"
                 SelectedItem="{Binding SelectedItem}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

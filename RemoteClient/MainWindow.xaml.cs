@@ -117,5 +117,11 @@ namespace RemoteClient
                 File.Delete(file);
             }
         }
+
+        private void lstBoxServerList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var vm = DataContext as MainWindowViewModel;
+            vm.OpenServerCommand.Execute(null);
+        }
     }
 }
