@@ -2,7 +2,8 @@
 @using RemoteClient.Core;
 @inject IDialogService DialogService
 <MudText Typo="Typo.h3">ServerList</MudText>
-<MudList Clickable="true" Color="Color.Success">
+<MudStack Class="pa-3">
+<MudList Clickable="true" @bind-SelectedValue="SelectedValue" Color="Color.Primary">
     <MudListSubheader>
         Remote Server List
     </MudListSubheader>
@@ -10,7 +11,7 @@
     {
         @foreach (var server in RemoteServerList)
         {
-            <MudListItem Icon="@GetIcon(server.ServerType)" IconColor="Color.Info" OnClick="ListItemClick">
+            <MudListItem Icon="@GetIcon(server.ServerType)" IconColor="Color.Info" OnClick="ListItemClick" Value="@server">
                 <MudStack Row>
                     <MudText>@server.Sequence</MudText>
                     <MudText>|</MudText>
@@ -23,11 +24,13 @@
         }
     }
 </MudList>
-
+<MudButton @onclick="Confirm" Variant="Variant.Filled" Color="Color.Primary" Class="rounded-lg mt-6">确定</MudButton>
+</MudStack>
 @code {
     private ServerService _service;
 
     private IEnumerable<ServerModel> RemoteServerList { get; set; }
+    private object SelectedValue { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,9 +58,13 @@
 
     private void ListItemClick(MouseEventArgs e)
     {
-        if (e.Detail > 1)
+        if (e.Detail > 1) // double click
         {
-            
+
         }
+    }
+    private void Confirm()
+    {
+        
     }
 }
