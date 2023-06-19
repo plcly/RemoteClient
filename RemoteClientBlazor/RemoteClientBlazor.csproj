@@ -1,22 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
-    <AssemblyVersion>1.0</AssemblyVersion>
+	<RootNamespace>RemoteClientBlazor</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="AppSettings.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="icon.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="AppSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="7.0.86" />
+    <PackageReference Include="MudBlazor" Version="6.4.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,12 +36,6 @@
     <Resource Include="icon.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="AppSettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

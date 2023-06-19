@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteClient", "RemoteClien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteClient.Core", "RemoteClient.Core\RemoteClient.Core.csproj", "{B8E0DB97-4E0F-4EE6-88BF-D4E2320BFCF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteClient.UnitTest", "RemoteClient.UnitTest\RemoteClient.UnitTest.csproj", "{A59DA8CE-8655-47A1-AFC3-CD40FB0B0E01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteClient.UnitTest", "RemoteClient.UnitTest\RemoteClient.UnitTest.csproj", "{A59DA8CE-8655-47A1-AFC3-CD40FB0B0E01}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemoteClientBlazor", "RemoteClientBlazor\RemoteClientBlazor.csproj", "{87357821-62EB-48FB-929A-AB2ED6642952}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{A59DA8CE-8655-47A1-AFC3-CD40FB0B0E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A59DA8CE-8655-47A1-AFC3-CD40FB0B0E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A59DA8CE-8655-47A1-AFC3-CD40FB0B0E01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87357821-62EB-48FB-929A-AB2ED6642952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87357821-62EB-48FB-929A-AB2ED6642952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87357821-62EB-48FB-929A-AB2ED6642952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87357821-62EB-48FB-929A-AB2ED6642952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

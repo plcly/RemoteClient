@@ -1,0 +1,63 @@
+﻿@page "/ServerList"
+@using RemoteClient.Core;
+@inject IDialogService DialogService
+<MudText Typo="Typo.h3">ServerList</MudText>
+<MudList Clickable="true" Color="Color.Success">
+    <MudListSubheader>
+        Remote Server List
+    </MudListSubheader>
+    @if (RemoteServerList != null)
+    {
+        @foreach (var server in RemoteServerList)
+        {
+            <MudListItem Icon="@GetIcon(server.ServerType)" IconColor="Color.Info" OnClick="ListItemClick">
+                <MudStack Row>
+                    <MudText>@server.Sequence</MudText>
+                    <MudText>|</MudText>
+                    <MudText Color="Color.Success">@server.ServerName</MudText>
+                    <MudText>|</MudText>
+                    <MudText>@server.ServerAddress</MudText>
+                </MudStack>
+            </MudListItem>
+            <MudDivider DividerType="DividerType.Inset" ></MudDivider>
+        }
+    }
+</MudList>
+
+@code {
+    private ServerService _service;
+
+    private IEnumerable<ServerModel> RemoteServerList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _service = ServerServiceBuilder.GetInstance();
+            RemoteServerList = _service.GetAllServers();
+        }
+        catch (ArgumentNullException ex)
+        {
+            await DialogService.ShowMessageBox("Warning!", ex.Message);
+        }
+    }
+
+    private string GetIcon(ServerType serverType)
+    {
+        switch (serverType)
+        {
+            case ServerType.Linux:
+                return Icons.Custom.Brands.Linux;
+            default:
+                return Icons.Custom.Brands.MicrosoftWindows;
+        }
+    }
+
+    private void ListItemClick(MouseEventArgs e)
+    {
+        if (e.Detail > 1)
+        {
+            
+        }
+    }
+}
