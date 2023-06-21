@@ -6,7 +6,7 @@
 
 <MudStack Class="pa-12">
     <MudText Typo="Typo.h5">请输入Key和IV</MudText>
-    <MudTextField Label="Key" @bind-Value="Key" T="string" OnKeyUp="Keyup"></MudTextField>
+    <MudTextField Label="Key" @bind-Value="Key" T="string" OnKeyUp="Keyup" tabindex="1"></MudTextField>
     <MudTextField Label="IV" @bind-Value="IV" T="string" OnKeyUp="Keyup"></MudTextField>
     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-10 rounded-lg" @onclick="Confirmed">确定</MudButton>
 </MudStack>
