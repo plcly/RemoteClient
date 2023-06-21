@@ -1,18 +1,24 @@
 ﻿@page "/ServerList"
+@using CommunityToolkit.Mvvm.DependencyInjection;
 @using RemoteClient.Core;
 @inject IDialogService DialogService
-<MudText Typo="Typo.h3">ServerList</MudText>
 <MudStack Class="pa-3">
-<MudList Clickable="true" @bind-SelectedValue="SelectedValue" Color="Color.Primary">
-    <MudListSubheader>
-        Remote Server List
-    </MudListSubheader>
-    @if (RemoteServerList != null)
-    {
-        @foreach (var server in RemoteServerList)
+    <MudStack Row>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Add" Color="Color.Primary" Class="rounded-lg" @onclick="Add">添加</MudButton>
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Edit" Color="Color.Primary" Class="rounded-lg" @onclick="Update">修改</MudButton>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Outlined.Delete" Color="Color.Primary" Class="rounded-lg" @onclick="Delete">删除</MudButton>
+    </MudStack>
+    <MudList Clickable="true" Class="border-dotted border" @bind-SelectedValue="SelectedValue" Color="Color.Warning" Style="max-height: 350px; overflow-y: scroll">
+        <MudListSubheader>
+            Remote Server List
+        </MudListSubheader>
+        @if (RemoteServerList != null)
         {
-            <MudListItem Icon="@GetIcon(server.ServerType)" IconColor="Color.Info" OnClick="ListItemClick" Value="@server">
-                <MudStack Row>
+            @foreach (var server in RemoteServerList)
+            {
+                <MudListItem Icon="@GetIcon(server.ServerType)" IconColor="Color.Info" OnClick="ListItemClick" Value="@server">
+                    <MudStack Row>
                     <MudText>@server.Sequence</MudText>
                     <MudText>|</MudText>
                     <MudText Color="Color.Success">@server.ServerName</MudText>
@@ -20,17 +26,37 @@
                     <MudText>@server.ServerAddress</MudText>
                 </MudStack>
             </MudListItem>
-            <MudDivider DividerType="DividerType.Inset" ></MudDivider>
+                <MudDivider DividerType="DividerType.Inset"></MudDivider>
+            }
         }
-    }
-</MudList>
-<MudButton @onclick="Confirm" Variant="Variant.Filled" Color="Color.Primary" Class="rounded-lg mt-6">确定</MudButton>
+    </MudList>
+    <MudStack Row>
+        <MudCheckBox @bind-Checked="@StartSSH" Color="Color.Primary">StartSSH</MudCheckBox>
+        <MudCheckBox @bind-Checked="@StartSFTP" Color="Color.Primary">StartSFTP</MudCheckBox>
+    </MudStack>
+    <MudSpacer></MudSpacer>
+    <MudButton @onclick="Confirm" Variant="Variant.Filled" Color="Color.Primary" Class="rounded-lg mt-6">确定</MudButton>
 </MudStack>
 @code {
     private ServerService _service;
 
     private IEnumerable<ServerModel> RemoteServerList { get; set; }
     private object SelectedValue { get; set; }
+    private ServerHandle _serverHandle;
+    public bool StartSSH { get; set; } = true;
+    public bool StartSFTP { get; set; } = true;
+    private DialogOptions dialogOptions;
+
+    public ServerList()
+    {
+        var settings = Ioc.Default.GetService<AppSettings>();
+        _serverHandle = new ServerHandle(settings);
+        dialogOptions = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            FullWidth = true
+        };
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,6 +70,7 @@
             await DialogService.ShowMessageBox("Warning!", ex.Message);
         }
     }
+
 
     private string GetIcon(ServerType serverType)
     {
@@ -60,11 +87,85 @@
     {
         if (e.Detail > 1) // double click
         {
-
+            Confirm();
         }
     }
+
+    private void RefreshPage()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    private async void Add()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ServerModelItem", new ServerModel()); 
+        var dialog = await DialogService.ShowAsync<ServerModelDialog>("添加服务器", parameters, dialogOptions);
+        var result = await dialog.Result;
+        if (!result.Canceled)
+        {
+            var data = result.Data as ServerModel;
+            if (data != null)
+            {
+                _service.InsertServer(data);
+                RefreshPage();
+            }
+        }
+    }
+
+    private async void Update()
+    {
+        if (CheckSelected(out ServerModel serverModel))
+        {
+            var parameters = new DialogParameters();
+            parameters.Add("ServerModelItem", serverModel);
+            var dialog = await DialogService.ShowAsync<ServerModelDialog>("修改服务器", parameters, dialogOptions);
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+                var data = result.Data as ServerModel;
+                if (data != null)
+                {
+                    _service.UpdateServer(data);
+                    RefreshPage();
+                }
+            }
+        }
+    }
+
+    private async void Delete()
+    {
+        if (CheckSelected(out ServerModel serverModel))
+        {
+            var result = await DialogService.ShowMessageBox("警告", "确认删除？", "确定", "取消");
+            if (result.HasValue && result.Value)
+            {
+                _service.Delete(serverModel);
+                RefreshPage();
+            }
+        }
+    }
+
+    private bool CheckSelected(out ServerModel serverModel)
+    {
+        serverModel = SelectedValue as ServerModel;
+        if (serverModel == null)
+        {
+            DialogService.ShowMessageBox("提示", "请先选择一行");
+            return false;
+        }
+
+        return true;
+    }
+
     private void Confirm()
     {
-        
+        if (CheckSelected(out ServerModel serverModel))
+        {
+            _serverHandle.OpenServer(serverModel, StartSSH, StartSFTP);
+        }
     }
 }

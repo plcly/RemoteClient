@@ -1,0 +1,34 @@
+﻿@using RemoteClient.Core;
+<MudDialog>
+    <DialogContent>
+        <MudStack Class="pa-2" >
+            <MudTextField Required="true" @bind-Value="ServerModelItem.Id" Immediate="true" Label="Id" Class="d-none"></MudTextField>
+            <MudTextField Required="true" @bind-Value="ServerModelItem.ServerName" Immediate="true" Label="服务器名称"></MudTextField>
+            <MudTextField Required="true" @bind-Value="ServerModelItem.ServerAddress" Immediate="true" Label="服务器地址"></MudTextField>
+            <MudTextField Required="true" @bind-Value="ServerModelItem.UserName" Immediate="true" Label="用户名"></MudTextField>
+            <MudTextField Required="true" @bind-Value="ServerModelItem.UserPassword" Immediate="true" Label="密码/私钥"></MudTextField>
+            <MudSelect T="ServerType" Label="服务器类型" AnchorOrigin="Origin.BottomCenter" @bind-Value="ServerModelItem.ServerType">
+                <MudSelectItem T="ServerType" Value="ServerType.Linux">
+                    <MudIcon Icon="@Icons.Custom.Brands.Linux" Color="Color.Primary"></MudIcon> Linux
+                </MudSelectItem>
+                <MudSelectItem T="ServerType" Value="ServerType.Windows">
+                    <MudIcon Icon="@Icons.Custom.Brands.MicrosoftWindows" Color="Color.Primary"></MudIcon> Windows
+                </MudSelectItem>
+            </MudSelect>
+            <MudTextField Required="true" @bind-Value="ServerModelItem.Sequence" Immediate="true" Label="排序"></MudTextField>
+            <MudCheckBox @bind-Checked="ServerModelItem.UsePrivateKey" Label="是否使用私钥"></MudCheckBox>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">取消</MudButton>
+        <MudButton Color="Color.Error" OnClick="Submit">确定</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public ServerModel ServerModelItem { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(ServerModelItem));
+
+    void Cancel() => MudDialog.Cancel();
+}
