@@ -52,7 +52,12 @@ namespace RemoteClient.Core
                 var fileName = string.Empty;
                 if (selectedItem.UsePrivateKey)
                 {
-                    fileName = Path.Combine(Environment.CurrentDirectory, "temp", selectedItem.ServerName + "_" + selectedItem.Id + _settings.PrivateKeyExtension);
+                    var folder = Path.Combine(Environment.CurrentDirectory, "temp");
+                    if (!Directory.Exists(folder))
+                    {
+                        Directory.CreateDirectory(folder);
+                    }
+                    fileName = Path.Combine(folder, selectedItem.ServerName + "_" + selectedItem.Id + _settings.PrivateKeyExtension);
                     if (File.Exists(fileName))
                     {
                         File.Delete(fileName);

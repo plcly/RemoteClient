@@ -6,7 +6,7 @@
             <MudTextField Required="true" @bind-Value="ServerModelItem.ServerName" Immediate="true" Label="服务器名称"></MudTextField>
             <MudTextField Required="true" @bind-Value="ServerModelItem.ServerAddress" Immediate="true" Label="服务器地址"></MudTextField>
             <MudTextField Required="true" @bind-Value="ServerModelItem.UserName" Immediate="true" Label="用户名"></MudTextField>
-            <MudTextField Required="true" @bind-Value="ServerModelItem.UserPassword" Immediate="true" Label="密码/私钥"></MudTextField>
+            <MudTextField Required="true" @bind-Value="ServerModelItem.UserPassword" Immediate="true" Label="密码/私钥" Lines="2"></MudTextField>
             <MudSelect T="ServerType" Label="服务器类型" AnchorOrigin="Origin.BottomCenter" @bind-Value="ServerModelItem.ServerType">
                 <MudSelectItem T="ServerType" Value="ServerType.Linux">
                     <MudIcon Icon="@Icons.Custom.Brands.Linux" Color="Color.Primary"></MudIcon> Linux
