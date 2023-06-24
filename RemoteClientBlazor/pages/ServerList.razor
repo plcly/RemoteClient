@@ -91,9 +91,9 @@
         }
     }
 
-    private void RefreshPage()
+    private async Task RefreshPage()
     {
-        InvokeAsync(() =>
+        await InvokeAsync(() =>
         {
             StateHasChanged();
         });
@@ -111,7 +111,7 @@
             if (data != null)
             {
                 _service.InsertServer(data);
-                RefreshPage();
+                await RefreshPage();
             }
         }
     }
@@ -130,7 +130,7 @@
                 if (data != null)
                 {
                     _service.UpdateServer(data);
-                    RefreshPage();
+                    await RefreshPage();
                 }
             }
         }
@@ -144,7 +144,7 @@
             if (result.HasValue && result.Value)
             {
                 _service.Delete(serverModel);
-                RefreshPage();
+                await RefreshPage();
             }
         }
     }
